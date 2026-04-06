@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Connexion</title>
+</head>
+<body class="container mt-4">
+
+    {% include 'navbar.html' %}
+    <h2>Ajouter une note</h2>
+
+    <form method="POST">
+        <label>Nom de l'étudiant:  </label>
+        <input type="text" name="student" placeholder="Nom étudiant" required><br><br>
+        <label>Matière:</label>
+        <input type="text" name="subject" placeholder="Matière" required><br><br>
+        <label>Note de l'étudiant: </label>
+        <input type="number" step="0.25" name="score" placeholder="Note étudiant" required><br><br>
+        <button type="submit" class="btn btn-primary m-2">Ajouter</button>
+    </form>
+
+</body>
+</html>
