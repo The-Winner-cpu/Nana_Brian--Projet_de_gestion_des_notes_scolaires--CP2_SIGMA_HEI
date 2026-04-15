@@ -17,9 +17,9 @@ def add_note():
         student_name= request.form.get('student')
         subject= request.form.get('subject')
         score= float(request.form.get('score'))
-        student= Student.query.filter_by(name=student_name).first()
+        student= Student.query.filter_by(name= student_name).first()
         if not student:
-            student= Student(name=student_name)
+            student= Student(name= student_name, user_id= current_user.id)
             db.session.add(student)
             db.session.commit()
         new_note = Note(
@@ -32,8 +32,16 @@ def add_note():
         return redirect('/notes')
     return render_template('add_note.html')
 
+@login_required
 def list_notes():
-    notes= Note.query.all()
+    if current_user.role == 'admin':
+        notes= Note.query.all()
+    else:
+        student= Student.query.filter_by(name= current_user.username).first()        
+        if student:
+            notes= student.notes
+        else:
+            notes= []
     return render_template('notes.html', notes= notes)
 
 @login_required
@@ -133,6 +141,8 @@ import os
 
 def generate_pdf(student_id):
     student= Student.query.get(student_id)
+    if current_user.role != 'admin' and student.name != current_user.username:
+        return "Accès interdit mon type !"
     notes= student.notes
     buffer= io.BytesIO()
     pdf= canvas.Canvas(buffer, pagesize= A4)
@@ -188,6 +198,14 @@ def general_average():
         avg= 0
     return round(avg, 2)
 
+@login_required
 def my_notes():
-    notes= Note.query.all()
+    student= Student.query.filter_by(name= student_name).first()
+    if not student:
+        student= Student(
+            name= student_name,
+            user_id= current_user.id
+        )
+
+    notes= student.notes
     return render_template('notes.html', notes= notes)

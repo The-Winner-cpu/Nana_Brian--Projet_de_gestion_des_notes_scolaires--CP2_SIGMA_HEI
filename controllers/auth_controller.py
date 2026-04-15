@@ -2,6 +2,7 @@ from flask import render_template, request, redirect, url_for
 from extensions import db
 from models.user import User
 from werkzeug.security import generate_password_hash
+from models.student import Student
 
 def register():
     if request.method == 'POST':
@@ -16,6 +17,13 @@ def register():
             role= 'user'
         )
         db.session.add(new_user)
+        db.session.commit()
+        
+        student= Student(
+            name= username,
+            user_id= new_user.id
+        )
+        db.session.add(student)
         db.session.commit()
         return redirect(url_for('login'))
     return render_template('register.html')
